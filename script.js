@@ -1,40 +1,43 @@
-const player = document.querySelector('.player');
-const video = player.querySelector('.viewer');
-const progress = player.querySelector('.progress');
-const progressBar = player.querySelector('.progress__filled');
-const toggle = player.querySelector('.toggle');
-const skipButtons = player.querySelectorAll('[data-skip]');
-const ranges = player.querySelectorAll('.player__slider');
+const video = document.querySelector('.player__video');
+const progress = document.querySelector('.progress__filled');
+const toggleBtn = document.querySelector('.toggle');
+const volumeSlider = document.querySelector('input[name="volume"]');
+const playbackSpeedSlider = document.querySelector('input[name="playbackSpeed"]');
+const skipButtons = document.querySelectorAll('.player__button[data-skip]');
 
 function togglePlay() {
-    const method = video.paused ? 'play' : 'pause';
-    videomethod;
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
 }
 
 function updateButton() {
-    const icon = this.paused ? '►' : '❚ ❚';
-    toggle.textContent = icon;
+    const icon = video.paused ? '►' : '❚ ❚';
+    toggleBtn.textContent = icon;
+}
+
+function handleProgress() {
+    const percent = (video.currentTime / video.duration) * 100;
+    progress.style.flexBasis = `${percent}%`;
+}
+
+function handleSliderUpdate() {
+    video[this.name] = this.value;
 }
 
 function skip() {
     video.currentTime += parseFloat(this.dataset.skip);
 }
 
-function handleRangeUpdate() {
-    video[this.name] = this.value;
-}
-
-function handleProgress() {
-    const percent = (video.currentTime / video.duration) * 100;
-    progressBar.style.flexBasis = `${percent}%`;
-}
-
 video.addEventListener('click', togglePlay);
+toggleBtn.addEventListener('click', togglePlay);
 video.addEventListener('play', updateButton);
 video.addEventListener('pause', updateButton);
 video.addEventListener('timeupdate', handleProgress);
 
-toggle.addEventListener('click', togglePlay);
+volumeSlider.addEventListener('input', handleSliderUpdate);
+playbackSpeedSlider.addEventListener('input', handleSliderUpdate);
+
 skipButtons.forEach(button => button.addEventListener('click', skip));
-ranges.forEach(range => range.addEventListener('change', handleRangeUpdate));
-ranges.forEach(range => range.addEventListener('mousemove', handleRangeUpdate));
